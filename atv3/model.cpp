@@ -37,7 +37,7 @@ void Model::computeNormals() {
     // Compute normal
     const auto edge1{b.position - a.position};
     const auto edge2{c.position - b.position};
-    const glm::vec3 normal{glm::cross(edge1, edge2)};
+    glm::vec3 normal{glm::cross(edge1, edge2)};
 
     // Accumulate on vertices
     a.normal += normal;
@@ -51,6 +51,67 @@ void Model::computeNormals() {
   }
 
   m_hasNormals = true;
+}
+
+void Model::computeTangents() {
+  // Reserve space for bitangents
+  std::vector<glm::vec3> bitangents(m_vertices.size(), glm::vec3(0));
+
+  // Compute face tangents and bitangents
+  for (const auto offset : iter::range<int>(0, m_indices.size(), 3)) {
+    // Get face indices
+    const auto i1{m_indices.at(offset + 0)};
+    const auto i2{m_indices.at(offset + 1)};
+    const auto i3{m_indices.at(offset + 2)};
+
+    // Get face vertices
+    Vertex& v1{m_vertices.at(i1)};
+    Vertex& v2{m_vertices.at(i2)};
+    Vertex& v3{m_vertices.at(i3)};
+
+    const auto e1{v2.position - v1.position};
+    const auto e2{v3.position - v1.position};
+    const auto delta1{v2.texCoord - v1.texCoord};
+    const auto delta2{v3.texCoord - v1.texCoord};
+
+    glm::mat2 M;
+    M[0][0] = delta2.t;
+    M[0][1] = -delta1.t;
+    M[1][0] = -delta2.s;
+    M[1][1] = delta1.s;
+    M *= (1.0f / (delta1.s * delta2.t - delta2.s * delta1.t));
+
+    const auto tangent{glm::vec4(M[0][0] * e1.x + M[0][1] * e2.x,
+                                 M[0][0] * e1.y + M[0][1] * e2.y,
+                                 M[0][0] * e1.z + M[0][1] * e2.z, 0.0f)};
+
+    const auto bitangent{glm::vec3(M[1][0] * e1.x + M[1][1] * e2.x,
+                                   M[1][0] * e1.y + M[1][1] * e2.y,
+                                   M[1][0] * e1.z + M[1][1] * e2.z)};
+
+    // Accumulate on vertices
+    v1.tangent += tangent;
+    v2.tangent += tangent;
+    v3.tangent += tangent;
+
+    bitangents.at(i1) += bitangent;
+    bitangents.at(i2) += bitangent;
+    bitangents.at(i3) += bitangent;
+  }
+
+  for (auto&& [i, vertex] : iter::enumerate(m_vertices)) {
+    const auto& n{vertex.normal};
+    const auto& t{glm::vec3(vertex.tangent)};
+
+    // Orthogonalize t with respect to n
+    const auto tangent{t - n * glm::dot(n, t)};
+    vertex.tangent = glm::vec4(glm::normalize(tangent), 0);
+
+    // Compute handedness of re-orthogonalized basis
+    const auto b{glm::cross(n, t)};
+    const auto handedness{glm::dot(b, bitangents.at(i))};
+    vertex.tangent.w = (handedness < 0.0f) ? -1.0f : 1.0f;
+  }
 }
 
 void Model::createBuffers() {
@@ -74,11 +135,27 @@ void Model::createBuffers() {
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Model::loadCubeTexture(const std::string& path) {
+  if (!std::filesystem::exists(path)) return;
+
+  abcg::glDeleteTextures(1, &m_cubeTexture);
+  m_cubeTexture = abcg::opengl::loadCubemap(
+      {path + "posx.jpg", path + "negx.jpg", path + "posy.jpg",
+       path + "negy.jpg", path + "posz.jpg", path + "negz.jpg"});
+}
+
 void Model::loadDiffuseTexture(std::string_view path) {
   if (!std::filesystem::exists(path)) return;
 
   abcg::glDeleteTextures(1, &m_diffuseTexture);
   m_diffuseTexture = abcg::opengl::loadTexture(path);
+}
+
+void Model::loadNormalTexture(std::string_view path) {
+  if (!std::filesystem::exists(path)) return;
+
+  abcg::glDeleteTextures(1, &m_normalTexture);
+  m_normalTexture = abcg::opengl::loadTexture(path);
 }
 
 void Model::loadObj(std::string_view path, bool standardize) {
@@ -177,6 +254,12 @@ void Model::loadObj(std::string_view path, bool standardize) {
 
     if (!mat.diffuse_texname.empty())
       loadDiffuseTexture(basePath + mat.diffuse_texname);
+
+    if (!mat.normal_texname.empty()) {
+      loadNormalTexture(basePath + mat.normal_texname);
+    } else if (!mat.bump_texname.empty()) {
+      loadNormalTexture(basePath + mat.bump_texname);
+    }
   } else {
     // Default values
     m_Ka = {0.1f, 0.1f, 0.1f, 1.0f};
@@ -193,6 +276,10 @@ void Model::loadObj(std::string_view path, bool standardize) {
     computeNormals();
   }
 
+  if (m_hasTexCoords) {
+    computeTangents();
+  }
+
   createBuffers();
 }
 
@@ -201,6 +288,12 @@ void Model::render(int numTriangles) const {
 
   abcg::glActiveTexture(GL_TEXTURE0);
   abcg::glBindTexture(GL_TEXTURE_2D, m_diffuseTexture);
+
+  abcg::glActiveTexture(GL_TEXTURE1);
+  abcg::glBindTexture(GL_TEXTURE_2D, m_normalTexture);
+
+  abcg::glActiveTexture(GL_TEXTURE2);
+  abcg::glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeTexture);
 
   // Set minification and magnification parameters
   abcg::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -259,6 +352,16 @@ void Model::setupVAO(GLuint program) {
                                 reinterpret_cast<void*>(offset));
   }
 
+  const GLint tangentCoordAttribute{
+      abcg::glGetAttribLocation(program, "inTangent")};
+  if (tangentCoordAttribute >= 0) {
+    abcg::glEnableVertexAttribArray(tangentCoordAttribute);
+    GLsizei offset{sizeof(glm::vec3) + sizeof(glm::vec3) + sizeof(glm::vec2)};
+    abcg::glVertexAttribPointer(tangentCoordAttribute, 4, GL_FLOAT, GL_FALSE,
+                                sizeof(Vertex),
+                                reinterpret_cast<void*>(offset));
+  }
+
   // End of binding
   abcg::glBindBuffer(GL_ARRAY_BUFFER, 0);
   abcg::glBindVertexArray(0);
@@ -288,6 +391,8 @@ void Model::standardize() {
 }
 
 void Model::terminateGL() {
+  abcg::glDeleteTextures(1, &m_cubeTexture);
+  abcg::glDeleteTextures(1, &m_normalTexture);
   abcg::glDeleteTextures(1, &m_diffuseTexture);
   abcg::glDeleteBuffers(1, &m_EBO);
   abcg::glDeleteBuffers(1, &m_VBO);

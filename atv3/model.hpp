@@ -9,6 +9,7 @@ struct Vertex {
   glm::vec3 position{};
   glm::vec3 normal{};
   glm::vec2 texCoord{};
+  glm::vec4 tangent{};
 
   bool operator==(const Vertex& other) const noexcept {
     static const auto epsilon{std::numeric_limits<float>::epsilon()};
@@ -20,7 +21,9 @@ struct Vertex {
 
 class Model {
  public:
+  void loadCubeTexture(const std::string& path);
   void loadDiffuseTexture(std::string_view path);
+  void loadNormalTexture(std::string_view path);
   void loadObj(std::string_view path, bool standardize = true);
   void render(int numTriangles = -1) const;
   void setupVAO(GLuint program);
@@ -36,6 +39,8 @@ class Model {
   [[nodiscard]] float getShininess() const { return m_shininess; }
 
   [[nodiscard]] bool isUVMapped() const { return m_hasTexCoords; }
+
+  [[nodiscard]] GLuint getCubeTexture() const { return m_cubeTexture; }
 
   glm::vec4 m_lightDir{-1.0f, -1.0f, -1.0f, 0.0f};
   glm::vec4 m_Ia{1.0f};
@@ -58,6 +63,8 @@ class Model {
   float m_shininess;
   */
   GLuint m_diffuseTexture{};
+  GLuint m_normalTexture{};
+  GLuint m_cubeTexture{};
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
@@ -66,6 +73,7 @@ class Model {
   bool m_hasTexCoords{false};
 
   void computeNormals();
+  void computeTangents();
   void createBuffers();
   void standardize();
 };

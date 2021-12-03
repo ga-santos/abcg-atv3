@@ -41,38 +41,56 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   abcg::ElapsedTimer m_collisionTimer;
   abcg::ElapsedTimer m_restartWaitTimer;
 
-  void randomizeStar(glm::vec3 &position, glm::vec3 &rotation);
-  void update();
-
-  void restart();
   glm::vec3 m_shipPosition{glm::vec3(0.0f, 0.0f, 0.0f)};
 
   //NOVOS
   glm::mat4 m_modelMatrix{1.0f};
 
   // Shaders
-  std::vector<const char*> m_shaderNames{"texture", "blinnphong", "phong",
-                                         "gouraud", "normal", "depth"};
+  std::vector<const char*> m_shaderNames{"cubereflect", "cuberefract", "normalmapping", "texture", "blinnphong",
+      "phong",       "gouraud",     "normal",        "depth"};
   std::vector<GLuint> m_programs;
   int m_currentProgramIndex{};
 
   // Mapping mode
-  // 0: triplanar; 1: cylindrical; 2: spherical; 3: from mesh
   int m_mappingMode{};
 
-  // Light and material properties
-  /*
-  glm::vec4 m_lightDir{-1.0f, -1.0f, -1.0f, 0.0f};
-  glm::vec4 m_Ia{1.0f};
-  glm::vec4 m_Id{1.0f};
-  glm::vec4 m_Is{1.0f};
-  glm::vec4 m_Ka;
-  glm::vec4 m_Kd;
-  glm::vec4 m_Ks;
-  float m_shininess{};
-  */
+  // Skybox
+  const std::string m_skyShaderName{"skybox"};
+  GLuint m_skyVAO{};
+  GLuint m_skyVBO{};
+  GLuint m_skyProgram{};
 
+  // clang-format off
+  const std::array<glm::vec3, 36>  m_skyPositions{
+    // Front
+    glm::vec3{-1, -1, +1}, glm::vec3{+1, -1, +1}, glm::vec3{+1, +1, +1},
+    glm::vec3{-1, -1, +1}, glm::vec3{+1, +1, +1}, glm::vec3{-1, +1, +1},
+    // Back
+    glm::vec3{+1, -1, -1}, glm::vec3{-1, -1, -1}, glm::vec3{-1, +1, -1},
+    glm::vec3{+1, -1, -1}, glm::vec3{-1, +1, -1}, glm::vec3{+1, +1, -1},
+    // Right
+    glm::vec3{+1, -1, -1}, glm::vec3{+1, +1, -1}, glm::vec3{+1, +1, +1},
+    glm::vec3{+1, -1, -1}, glm::vec3{+1, +1, +1}, glm::vec3{+1, -1, +1},
+    // Left
+    glm::vec3{-1, -1, +1}, glm::vec3{-1, +1, +1}, glm::vec3{-1, +1, -1},
+    glm::vec3{-1, -1, +1}, glm::vec3{-1, +1, -1}, glm::vec3{-1, -1, -1},
+    // Top
+    glm::vec3{-1, +1, +1}, glm::vec3{+1, +1, +1}, glm::vec3{+1, +1, -1},
+    glm::vec3{-1, +1, +1}, glm::vec3{+1, +1, -1}, glm::vec3{-1, +1, -1},
+    // Bottom
+    glm::vec3{-1, -1, -1}, glm::vec3{+1, -1, -1}, glm::vec3{+1, -1, +1},
+    glm::vec3{-1, -1, -1}, glm::vec3{+1, -1, +1}, glm::vec3{-1, -1, +1}
+  };
+  // clang-format on
+
+  void initializeSkybox();
+  void renderSkybox();
+  void terminateSkybox();
   void loadModel(std::string path_obj, std::string path_text, Model &model);
+  void randomizeStar(glm::vec3 &position, glm::vec3 &rotation);
+  void update();
+  void restart();
 };
 
 #endif
