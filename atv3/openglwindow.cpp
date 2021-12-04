@@ -177,7 +177,7 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform1i(cubeTexLoc, 2);
   abcg::glUniform1i(mappingModeLoc, m_mappingMode);
 
-  const float deltaTime{static_cast<float>(getDeltaTime())};
+  //const float deltaTime{static_cast<float>(getDeltaTime())};
   const glm::mat3 texMatrix{glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3{1.0f})};
   abcg::glUniformMatrix3fv(texMatrixLoc, 1, GL_TRUE, &texMatrix[0][0]);
 
@@ -249,7 +249,7 @@ void OpenGLWindow::renderSkybox() {
   const GLint skyTexLoc{abcg::glGetUniformLocation(m_skyProgram, "skyTex")};
 
   // Set uniform variables
-  const float deltaTime{static_cast<float>(getDeltaTime())};
+  //const float deltaTime{static_cast<float>(getDeltaTime())};
   const auto viewMatrix{glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3{1.0f})};
   abcg::glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &viewMatrix[0][0]);
 

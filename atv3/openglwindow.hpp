@@ -18,7 +18,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
  private:
   static const int m_numStars{500};
 
-  GLuint m_program{};
+  //GLuint m_program{};
 
   int m_viewportWidth{};
   int m_viewportHeight{};
@@ -44,7 +44,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   glm::vec3 m_shipPosition{glm::vec3(0.0f, 0.0f, 0.0f)};
 
   //NOVOS
-  glm::mat4 m_modelMatrix{1.0f};
+  //glm::mat4 m_modelMatrix{1.0f};
 
   // Shaders
   std::vector<const char*> m_shaderNames{"cubereflect", "cuberefract", "normalmapping", "texture", "blinnphong",
