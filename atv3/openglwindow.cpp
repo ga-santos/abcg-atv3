@@ -43,7 +43,7 @@ void OpenGLWindow::initializeGL() {
   }
 
   loadModel("ship.obj", "Sci-fi_Metal_Plate_003_normal.jpg", m_ship);
-  //m_ship.loadCubeTexture(getAssetsPath() + "maps/cube/");
+  m_ship.loadCubeTexture(getAssetsPath() + "maps/cube/");
 
   cont_collisions = 5;
   m_shipPosition = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -216,7 +216,7 @@ void OpenGLWindow::paintGL() {
   // Render ship
   glm::mat4 modelMatrixShip{1.0f};
   modelMatrixShip = glm::translate(modelMatrixShip, m_shipPosition);
-  modelMatrixShip = glm::scale(modelMatrixShip, glm::vec3(0.07f));
+  modelMatrixShip = glm::scale(modelMatrixShip, glm::vec3(0.08f));
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &modelMatrixShip[0][0]);
 

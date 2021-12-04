@@ -42,7 +42,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   abcg::ElapsedTimer m_restartWaitTimer;
 
   glm::vec3 m_shipPosition{glm::vec3(0.0f, 0.0f, 0.0f)};
-
+  
   //NOVOS
   //glm::mat4 m_modelMatrix{1.0f};
 
