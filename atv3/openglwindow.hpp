@@ -16,7 +16,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void terminateGL() override;
 
  private:
-  static const int m_numStars{320};
+  static const int m_numStars{500};
 
   GLuint m_program{};
 

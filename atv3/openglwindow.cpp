@@ -42,7 +42,7 @@ void OpenGLWindow::initializeGL() {
     randomizeStar(position, rotation);
   }
 
-  loadModel("ship.obj", "ancient_greece_vase.jpg", m_ship);
+  loadModel("ship.obj", "Sci-fi_Metal_Plate_003_normal.jpg", m_ship);
   //m_ship.loadCubeTexture(getAssetsPath() + "maps/cube/");
 
   cont_collisions = 5;
@@ -101,7 +101,7 @@ void OpenGLWindow::randomizeStar(glm::vec3 &position, glm::vec3 &rotation) {
   // Get random position
   // x and y coordinates in the range [-20, 20]
   // z coordinates in the range [-100, 0]
-  std::uniform_real_distribution<float> distPosXY(-20.0f, 20.0f);
+  std::uniform_real_distribution<float> distPosXY(-40.0f, 40.0f);
   std::uniform_real_distribution<float> distPosZ(-100.0f, 0.0f);
 
   position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine),
@@ -177,7 +177,8 @@ void OpenGLWindow::paintGL() {
   abcg::glUniform1i(cubeTexLoc, 2);
   abcg::glUniform1i(mappingModeLoc, m_mappingMode);
 
-  const glm::mat3 texMatrix{glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3{1.0f})};
+  const float deltaTime{static_cast<float>(getDeltaTime())};
+  const glm::mat3 texMatrix{glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3{1.0f})};
   abcg::glUniformMatrix3fv(texMatrixLoc, 1, GL_TRUE, &texMatrix[0][0]);
 
   //const auto lightDirRotated{m_lightDir};
@@ -248,7 +249,8 @@ void OpenGLWindow::renderSkybox() {
   const GLint skyTexLoc{abcg::glGetUniformLocation(m_skyProgram, "skyTex")};
 
   // Set uniform variables
-  const auto viewMatrix{glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3{1.0f})};
+  const float deltaTime{static_cast<float>(getDeltaTime())};
+  const auto viewMatrix{glm::rotate(glm::mat4(1.0f), m_angle, glm::vec3{1.0f})};
   abcg::glUniformMatrix4fv(viewMatrixLoc, 1, GL_FALSE, &viewMatrix[0][0]);
 
   
@@ -341,6 +343,7 @@ void OpenGLWindow::paintUI() {
       if (static_cast<int>(currentIndex) != m_currentProgramIndex) {
         m_currentProgramIndex = currentIndex;
         m_star.setupVAO(m_programs.at(m_currentProgramIndex));
+        m_ship.setupVAO(m_programs.at(m_currentProgramIndex));
       }
     }
 
@@ -423,7 +426,7 @@ void OpenGLWindow::update() {
     auto &rotation{m_starRotations.at(index)};
 
     // Z coordinate increases by 10 units per second
-    position.z += deltaTime * 13.0f;
+    position.z += deltaTime * 11.0f;
 
     if(!isLose){
       // If this star is behind the camera, select a new random position and
