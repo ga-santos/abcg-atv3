@@ -13,5 +13,6 @@ Utilizando a Biblioteca ABCG criamos um jogo usando o efeito starfield ao qual a
 ## Funcionalidades
 O jogo consiste em uma nave que é controlada usando as teclas WASD ou SETAS (CIMA, BAIXO, ESQUERDA, DIREITA), fazendo a nave se mover e assim desviando dos obstáculos. 
 Ainda conta com o mostrador de FPS, contador de vida da nave(que diminui a cada colisão), e um slider de perspectiva para o jogador poder ver qual fica melhor para sua experiência.
+O jogo pode ser jogado utilizando diferentes shaders que exemplificam os assunstos abordados na disciplina.
 ## Arquivos 
-Os aqrquivos se encontram na pasta `atv2`. 
+Os aqrquivos se encontram na pasta `atv3`. 
