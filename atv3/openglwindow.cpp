@@ -119,16 +119,16 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
 
   if (ev.type == SDL_KEYDOWN) {
     if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w){
-      m_shipPosition.y += deltaTime * 5.0f;
+      m_shipPosition.y += deltaTime * 4.0f;
     }
     if (ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s){
-      m_shipPosition.y -= deltaTime * 5.0f;
+      m_shipPosition.y -= deltaTime * 4.0f;
     }
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a){
-      m_shipPosition.x -= deltaTime * 5.0f;
+      m_shipPosition.x -= deltaTime * 4.0f;
     }
     if (ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d){
-      m_shipPosition.x += deltaTime * 5.0f;
+      m_shipPosition.x += deltaTime * 4.0f;
     }
   }
 
@@ -182,6 +182,7 @@ void OpenGLWindow::paintGL() {
 
   //const auto lightDirRotated{m_lightDir};
   abcg::glUniform4fv(lightDirLoc, 1, &m_star.m_lightDir.x);
+  abcg::glUniform4fv(lightDirLoc, 1, &m_star.m_lightDir.y);
   abcg::glUniform4fv(IaLoc, 1, &m_star.m_Ia.x);
   abcg::glUniform4fv(IdLoc, 1, &m_star.m_Id.x);
   abcg::glUniform4fv(IsLoc, 1, &m_star.m_Is.x);
