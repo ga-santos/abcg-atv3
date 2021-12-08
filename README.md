@@ -15,4 +15,4 @@ O jogo consiste em uma nave que é controlada usando as teclas WASD ou SETAS (CI
 Ainda conta com o mostrador de FPS, contador de vida da nave(que diminui a cada colisão), e um slider de perspectiva para o jogador poder ver qual fica melhor para sua experiência.
 O jogo pode ser jogado utilizando diferentes shaders que exemplificam os assuntos abordados na disciplina.
 ## Arquivos 
-Os aqrquivos se encontram na pasta `atv3`. 
+Os arquivos se encontram na pasta `atv3`. 
