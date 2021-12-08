@@ -1,0 +1,24 @@
+# ninja log v5
+41	289	6606256480306322	abcg/CMakeFiles/abcg.dir/abcg_elapsedtimer.cpp.obj	b256a915924c244f
+20	662	6606256482360818	abcg/external/imgui/CMakeFiles/imgui.dir/imgui_impl_opengl3.cpp.obj	e6b3d7876c8e7d57
+64	783	6606256483477926	abcg/CMakeFiles/abcg.dir/abcg_openglfunctions.cpp.obj	38c218349fe89c1c
+13	858	6606256481243809	abcg/external/imgui/CMakeFiles/imgui.dir/imgui_widgets.cpp.obj	4b739d36e75422fe
+57	1091	6606256484963922	abcg/CMakeFiles/abcg.dir/abcg_exception.cpp.obj	319bf7c48e007778
+25	1176	6606256483358217	abcg/external/fmt/CMakeFiles/fmt.dir/format.cc.obj	a4125479ce320340
+5	1260	6606256482161361	abcg/external/imgui/CMakeFiles/imgui.dir/imgui_impl_sdl.cpp.obj	ebeaf08f80be898a
+715	1301	6606256490150829	abcg/CMakeFiles/abcg.dir/abcg_image.cpp.obj	af645ca4fad75f96
+49	1439	6606256485083604	abcg/CMakeFiles/abcg.dir/abcg_application.cpp.obj	b016706e4d389ba
+796	1494	6606256489283141	abcg/CMakeFiles/abcg.dir/abcg_string.cpp.obj	751faac601f35062
+313	1525	6606256487009238	abcg/CMakeFiles/abcg.dir/abcg_openglwindow.cpp.obj	6974e6265525c087
+1161	1534	6606256491886180	abcg/external/imgui/CMakeFiles/imgui.dir/imgui.cpp.obj	7765bee38efcbae6
+1048	1543	6606256492494591	abcg/CMakeFiles/abcg.dir/abcg_trackball.cpp.obj	97b58ba2df0632a0
+1372	1602	6606256493651467	abcg/external/imgui/CMakeFiles/imgui.dir/imgui_demo.cpp.obj	997935da4e280ef2
+1265	1622	6606256493043119	abcg/external/imgui/CMakeFiles/imgui.dir/imgui_tables.cpp.obj	c63868069b4077cc
+1464	1655	6606256494479271	abcg/external/imgui/CMakeFiles/imgui.dir/imgui_draw.cpp.obj	47bc5b69aa650e6d
+1526	1941	6606256497311696	atv3/CMakeFiles/atv3.dir/model.cpp.obj	6d093b4d34791f63
+1534	1962	6606256497361572	atv3/CMakeFiles/atv3.dir/main.cpp.obj	fb0666d709ffec7d
+1182	2121	6606256499251863	abcg/external/fmt/libfmt.a	c98f4e0ca3144d9b
+1656	2337	6606256501595454	abcg/external/imgui/libimgui.a	1b13598964b3b11f
+2338	2926	6606256507489591	abcg/libabcg.a	b1ecb4d7551b39b9
+1514	7993	6606256557543533	atv3/CMakeFiles/atv3.dir/openglwindow.cpp.obj	f7ce710a77e267ba
+7994	24414	0	bin/atv3.exe	ad80e4ccc187ddd4

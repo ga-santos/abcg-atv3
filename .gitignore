@@ -10,10 +10,6 @@
 .vs
 .vscode
 
-# Build directories
-build
-cmake-build*
-
 # Doxygen documentation
 Dox
 
