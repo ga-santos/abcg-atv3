@@ -42,11 +42,11 @@ void OpenGLWindow::initializeGL() {
     randomizeStar(position, rotation);
   }
 
-  loadModel("ship.obj", "Sci-fi_Metal_Plate_003_normal.jpg", m_ship);
+  loadModel("ship.obj", "ship_rough.jpg", m_ship);
   m_ship.loadCubeTexture(getAssetsPath() + "maps/cube/");
 
   cont_collisions = 5;
-  m_shipPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+  m_shipPosition = glm::vec3(0.0f, 0.0f, -0.1f);
 
   initializeSkybox();
 }
@@ -86,7 +86,7 @@ void OpenGLWindow::loadModel(std::string path_obj, std::string path_text, Model 
   model.terminateGL();
 
   model.loadDiffuseTexture(getAssetsPath() + "maps/" + path_text);
-  model.loadNormalTexture(getAssetsPath() + "maps/pattern_normal.png");
+  model.loadNormalTexture(getAssetsPath() + "maps/pattern_normal.png"); 
   model.loadObj(getAssetsPath() + path_obj);
   model.setupVAO(m_programs.at(m_currentProgramIndex));
 
@@ -101,11 +101,10 @@ void OpenGLWindow::randomizeStar(glm::vec3 &position, glm::vec3 &rotation) {
   // Get random position
   // x and y coordinates in the range [-20, 20]
   // z coordinates in the range [-100, 0]
-  std::uniform_real_distribution<float> distPosXY(-40.0f, 40.0f);
-  std::uniform_real_distribution<float> distPosZ(-100.0f, 0.0f);
+  std::uniform_real_distribution<float> distPosXY(-30.0f, 30.0f);
+  std::uniform_real_distribution<float> distPosZ(-100.0f, -30.0f);
 
-  position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine),
-                       distPosZ(m_randomEngine));
+  position = glm::vec3(distPosXY(m_randomEngine), distPosXY(m_randomEngine), distPosZ(m_randomEngine));
 
   //  Get random rotation axis
   std::uniform_real_distribution<float> distRotAxis(-1.0f, 1.0f);
@@ -120,16 +119,16 @@ void OpenGLWindow::handleEvent(SDL_Event& ev) {
 
   if (ev.type == SDL_KEYDOWN) {
     if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w){
-      m_shipPosition.y += deltaTime * 1.5f;
+      m_shipPosition.y += deltaTime * 5.0f;
     }
     if (ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s){
-      m_shipPosition.y -= deltaTime * 1.5f;
+      m_shipPosition.y -= deltaTime * 5.0f;
     }
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a){
-      m_shipPosition.x -= deltaTime * 1.5f;
+      m_shipPosition.x -= deltaTime * 5.0f;
     }
     if (ev.key.keysym.sym == SDLK_RIGHT || ev.key.keysym.sym == SDLK_d){
-      m_shipPosition.x += deltaTime * 1.5f;
+      m_shipPosition.x += deltaTime * 5.0f;
     }
   }
 
@@ -195,7 +194,7 @@ void OpenGLWindow::paintGL() {
     // Compute model matrix of the current star
     glm::mat4 modelMatrix{1.0f};
     modelMatrix = glm::translate(modelMatrix, position);
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(1.2f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.7f));
     modelMatrix = glm::rotate(modelMatrix, m_angle, rotation);
 
     // Set uniform variable
@@ -216,6 +215,7 @@ void OpenGLWindow::paintGL() {
   // Render ship
   glm::mat4 modelMatrixShip{1.0f};
   modelMatrixShip = glm::translate(modelMatrixShip, m_shipPosition);
+  modelMatrixShip = glm::rotate(modelMatrixShip, glm::radians(180.0f), glm::vec3(0, 1, 0));
   modelMatrixShip = glm::scale(modelMatrixShip, glm::vec3(0.08f));
 
   abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &modelMatrixShip[0][0]);
@@ -426,20 +426,20 @@ void OpenGLWindow::update() {
     auto &rotation{m_starRotations.at(index)};
 
     // Z coordinate increases by 10 units per second
-    position.z += deltaTime * 11.0f;
+    position.z += deltaTime * 15.0f;
 
     if(!isLose){
       // If this star is behind the camera, select a new random position and
       // orientation, and move it back to -100
       if (position.z > 0.1f) {
         randomizeStar(position, rotation);
-        position.z = -100.0f;  // Back to -100
+        //position.z = -50.0f;  // Back to -100
       }
 
       // Check Colisions
-      if (  (m_shipPosition.x <= position.x + 1.2f && m_shipPosition.x >= position.x - 1.2f)
-            && (m_shipPosition.y <= position.y + 1.2f && m_shipPosition.y >= position.y - 1.2f) 
-            && (m_shipPosition.z <= position.z + 1.2f && m_shipPosition.z >= position.z - 1.2f)) 
+      if (  (m_shipPosition.x <= position.x + 0.5f && m_shipPosition.x >= position.x - 0.5f)
+            && (m_shipPosition.y <= position.y + 0.6f && m_shipPosition.y >= position.y - 0.6f) 
+            && (m_shipPosition.z <= position.z + 0.0f && m_shipPosition.z >= position.z - 0.7f)) 
       {
         if(m_collisionTimer.elapsed() > 1){
           cont_collisions = cont_collisions - 1;

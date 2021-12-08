@@ -16,7 +16,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void terminateGL() override;
 
  private:
-  static const int m_numStars{500};
+  static const int m_numStars{1200};
 
   //GLuint m_program{};
 
@@ -34,7 +34,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   glm::mat4 m_viewMatrix{1.0f};
   glm::mat4 m_projMatrix{1.0f};
-  float m_FOV{168.0f};
+  float m_FOV{125.0f};
 
   int cont_collisions{2};
   bool isLose{false};
